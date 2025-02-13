@@ -41,6 +41,20 @@ public class ImprovedMassAssignmentSecurityStrategy extends Strategy {
                 }
 
                 //
+                List<String> vulnerabilities = analyzeSecurity(testSequence);
+                if (SQLInjectionOracle.validate(testSequence)) {
+                    vulnerabilities.add("SQL Injection");
+                }
+                if (XSSOracle.validate(testSequence)) {
+                    vulnerabilities.add("Cross-Site Scripting (XSS)");
+                }
+                if (PathTraversalOracle.validate(testSequence)) {
+                    vulnerabilities.add("Path Traversal");
+                }
+
+                if (!vulnerabilities.isEmpty()) {
+                    logSecurityIssues(testSequence, vulnerabilities);
+                }
                 writeTestReports(testSequence);
             }
 
@@ -48,6 +62,17 @@ public class ImprovedMassAssignmentSecurityStrategy extends Strategy {
         }
 
         generateCoverageReport();
+    }
+     private List<String> analyzeSecurity(TestSequence testSequence) {
+        List<String> vulnerabilities = new ArrayList<>();
+        return vulnerabilities;
+    }
+
+    private void logSecurityIssues(TestSequence testSequence, List<String> vulnerabilities) {
+        logger.warn("Security vulnerabilities detected in test sequence: " + testSequence);
+        for (String vulnerability : vulnerabilities) {
+            logger.warn(" - " + vulnerability);
+        }
     }
 
     private void writeTestReports(TestSequence testSequence) {
